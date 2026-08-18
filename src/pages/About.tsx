@@ -8,6 +8,7 @@ import { useClickSound } from "../components/roomMusicContext";
 import {
   type Media,
   cta,
+  education,
   galleryItems,
   hobbies,
   intro,
@@ -46,6 +47,69 @@ export default function About() {
             {intro.heading}
           </h1>
           <p className={styles.lead}>{intro.paragraph}</p>
+        </section>
+
+        <hr className={styles.divider} />
+
+        {/* ----------------------------------------------- education --- */}
+        <section className={styles.section} aria-labelledby="education-heading">
+          <p className={styles.eyebrow}>{education.eyebrow}</p>
+          <h2 id="education-heading" className={styles.h2}>
+            {education.heading}
+          </h2>
+          <p className={styles.sectionIntro}>{education.intro}</p>
+
+          <ul className={styles.education}>
+            {education.entries.map((e) => (
+              <li key={e.qualification} className={styles.eduCard}>
+                <div className={styles.eduHead}>
+                  {/* A real mark if one is ever supplied; otherwise a warm
+                      monogram. No third-party logo is bundled. */}
+                  {e.logo?.src ? (
+                    <img
+                      className={styles.eduLogo}
+                      src={e.logo.src}
+                      alt={e.logo.alt}
+                      width={e.logo.width}
+                      height={e.logo.height}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  ) : (
+                    <span className={styles.eduMonogram} aria-hidden="true">
+                      {e.monogram}
+                    </span>
+                  )}
+
+                  <div className={styles.eduHeadText}>
+                    <p className={styles.eduDates}>{e.dates}</p>
+                    <h3 className={styles.eduInstitution}>{e.institution}</h3>
+                    <p className={styles.eduLocation}>{e.location}</p>
+                  </div>
+                </div>
+
+                <p className={styles.eduQualification}>{e.qualification}</p>
+
+                <ul className={styles.eduPoints}>
+                  {e.scholarships?.length ? (
+                    <li className={styles.eduPoint}>
+                      <span className={styles.eduScholarship}>
+                        {e.scholarships.join(" · ")}
+                      </span>
+                    </li>
+                  ) : null}
+                  {e.detailItems?.length ? (
+                    <li className={styles.eduPoint}>
+                      <span className={styles.eduPointLabel}>
+                        {e.detailLabel}:
+                      </span>{" "}
+                      {e.detailItems.join(", ")}
+                    </li>
+                  ) : null}
+                </ul>
+              </li>
+            ))}
+          </ul>
         </section>
 
         <hr className={styles.divider} />

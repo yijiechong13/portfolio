@@ -69,109 +69,132 @@
   color: var(--ink-700);
 }
 
-.channels {
+/* ------------------------------------------------------- contact panel
+
+   One centred column of rows: circular icon, uppercase label, value. Warm
+   cream-and-coral, never dark. The two link rows are anchors so the whole
+   row is clickable; Location is static because it is not actionable.
+   ------------------------------------------------------------------------ */
+
+.panel {
   list-style: none;
-  margin: 1.9rem 0 0;
+  /* Centred with a sensible cap so it never hugs the left edge on desktop. */
+  width: 100%;
+  max-width: 34rem;
+  /* Centred in the shell rather than pinned left, so it does not sit
+     awkwardly against the edge on wide screens. */
+  margin: clamp(1.75rem, 4vw, 2.5rem) auto 0;
   padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
+  display: grid;
+  gap: 0.7rem;
 }
 
-.btn {
-  display: inline-flex;
+.row {
+  position: relative;
+  display: flex;
   align-items: center;
-  gap: 0.45rem;
-  min-height: 44px;
-  padding: 0.72rem 1.35rem;
-  border-radius: 999px;
-  border: 1px solid transparent;
-  font-size: 0.96rem;
-  font-weight: 600;
+  gap: 0.6rem;
+  min-width: 0;
+  border: 1px solid var(--beige-200);
+  border-radius: 16px;
+  background: rgba(255, 253, 249, 0.9);
   transition:
     transform var(--dur) var(--ease),
-    background-color var(--dur) var(--ease),
     border-color var(--dur) var(--ease),
     box-shadow var(--dur) var(--ease);
 }
 
-.btnPrimary {
-  background: var(--peach-deep);
-  color: #fffdfa;
-  box-shadow: 0 3px 12px rgba(201, 130, 99, 0.24);
-}
-
-.btnPrimary:hover,
-.btnPrimary:focus-visible {
-  transform: translateY(-2px);
-  background: var(--peach-deeper);
-}
-
-.btnGhost {
-  background: rgba(255, 253, 249, 0.85);
-  border-color: var(--beige-200);
-  color: var(--ink-700);
-}
-
-.btnGhost:hover,
-.btnGhost:focus-visible {
+.row:hover,
+.row:focus-within {
   transform: translateY(-2px);
   border-color: var(--blush);
   box-shadow: var(--shadow-md);
 }
 
-.icon { width: 13px; height: 13px; }
-
-/* ------------------------------------------------------------ email row
-
-   The address in plain text under the buttons: the button is the ACTION, this
-   is the value, for anyone who would rather paste it elsewhere. Quiet by
-   design — it must not compete with the primary CTA.
-   ------------------------------------------------------------------------ */
-
-.emailRow {
+/* The clickable area fills the row so the whole card is a target. */
+.rowLink,
+.rowStatic {
+  flex: 1 1 auto;
+  min-width: 0;
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 0.4rem 0.6rem;
-  margin: 1.1rem 0 0;
-  font-size: 0.92rem;
-  color: var(--ink-500);
+  gap: clamp(0.75rem, 2vw, 1rem);
+  padding: clamp(0.85rem, 2vw, 1.05rem) clamp(0.9rem, 2.2vw, 1.15rem);
+  border-radius: 16px;
 }
 
-/* Narrow phones: the EMAIL label takes its own line so the address and the
-   copy control stay together on the next one, rather than fragmenting. */
-@media (max-width: 460px) {
-  .emailRow { row-gap: 0.3rem; }
-  .emailLabel { flex: 1 0 100%; }
+.rowLink:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
 }
 
-.emailLabel {
-  font-size: 0.76rem;
+.iconCircle {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--blush);
+  background: var(--blush-soft);
+  color: var(--terracotta-text);
+  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+
+.row:hover .iconCircle,
+.row:focus-within .iconCircle {
+  background: var(--peach-deep);
+  color: #fffdfa;
+}
+
+.glyph { width: 21px; height: 21px; display: block; }
+
+.rowText {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+}
+
+.rowLabel {
+  font-size: 0.7rem;
   font-weight: 700;
-  letter-spacing: 0.11em;
+  letter-spacing: 0.13em;
   text-transform: uppercase;
   color: var(--ink-400);
 }
 
-/* Selectable and monospaced-ish so the address is easy to read character by
-   character; `user-select: all` makes one click select the whole thing. */
-.emailValue {
-  font-weight: 500;
+/* `break-all` on the address only — it is the one value long enough to
+   overflow a narrow phone. */
+.rowValue {
+  font-size: 0.96rem;
+  font-weight: 600;
+  line-height: 1.4;
   color: var(--ink-900);
-  user-select: all;
-  word-break: break-all;
+  overflow-wrap: anywhere;
 }
 
+.external {
+  flex: none;
+  width: 13px;
+  height: 13px;
+  margin-left: auto;
+  color: var(--ink-400);
+}
+
+/* Secondary control inside the Email row — its own tab stop, so activating
+   it never fires the mailto. */
 .copy {
+  flex: none;
+  margin-right: clamp(0.9rem, 2.2vw, 1.15rem);
   display: inline-flex;
   align-items: center;
   min-height: 32px;
-  padding: 0.3rem 0.7rem;
+  padding: 0.3rem 0.72rem;
   border-radius: 999px;
   border: 1px solid var(--beige-200);
-  background: rgba(255, 253, 249, 0.85);
-  font-size: 0.8rem;
+  background: rgba(255, 253, 249, 0.9);
+  font-size: 0.78rem;
   font-weight: 600;
   color: var(--ink-700);
   cursor: pointer;
@@ -181,15 +204,18 @@
 .copy:hover,
 .copy:focus-visible {
   border-color: var(--blush);
-  color: var(--peach-deeper);
+  color: var(--terracotta-text);
 }
 
-/* Buttons stack full-width on the narrowest phones. */
-@media (max-width: 460px) {
-  .channels { flex-direction: column; align-items: stretch; }
-  .btn { justify-content: center; }
+/* Mobile: smaller circles, tighter padding, still one column. */
+@media (max-width: 520px) {
+  .panel { max-width: none; gap: 0.6rem; }
+  .iconCircle { width: 38px; height: 38px; }
+  .glyph { width: 18px; height: 18px; }
+  .rowValue { font-size: 0.92rem; }
+  .copy { margin-right: 0.75rem; padding: 0.28rem 0.6rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .back:hover, .btn:hover, .btn:focus-visible { transform: none; }
+  .back:hover, .row:hover, .row:focus-within { transform: none; }
 }

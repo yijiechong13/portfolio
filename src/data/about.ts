@@ -52,6 +52,74 @@ export const intro = {
 
 /* ----------------------------------------------------------- hobbies ---- */
 
+/* ------------------------------------------------------------ education --- */
+
+export type EducationEntry = {
+  qualification: string;
+  institution: string;
+  location: string;
+  dates: string;
+  /** Shown as one understated line; omit the field when there are none. */
+  scholarships?: string[];
+  /** Label for the tag row, e.g. "Relevant areas" or "Grades". */
+  detailLabel?: string;
+  detailItems?: string[];
+  /**
+   * OPTIONAL institution mark, e.g. "/education/nus.png". Renders NOTHING
+   * while null — the card falls back to a typographic monogram. Only add a
+   * file you have the right to redistribute; these are trademarks.
+   */
+  logo?: { src: string | null; alt: string; width: number; height: number };
+  /** Fallback shown in place of a logo. Two letters reads best. */
+  monogram: string;
+};
+
+export const education = {
+  eyebrow: "Background",
+  heading: "Education",
+  intro:
+    "My academic background and the areas that have shaped my interest in building reliable, useful technology.",
+  entries: [
+    {
+      monogram: "NUS",
+      logo: {
+        src: "/education/nus.png",
+        alt: "National University of Singapore crest",
+        width: 144,
+        height: 276,
+      },
+      qualification: "Bachelor of Computing in Computer Science",
+      institution: "National University of Singapore",
+      location: "Singapore",
+      dates: "Aug 2024 – May 2028",
+      scholarships: ["ASEAN Undergraduate Scholarship"],
+      detailLabel: "Relevant areas",
+      detailItems: [
+        "Software Engineering",
+        "Database Systems",
+        "Object-Oriented Programming",
+        "Data Structures & Algorithms",
+      ],
+    },
+    {
+      monogram: "SC",
+      logo: {
+        src: "/education/sunway.png",
+        alt: "Sunway College crest",
+        width: 77,
+        height: 118,
+      },
+      qualification: "Cambridge A Levels",
+      institution: "Sunway College",
+      location: "Selangor, Malaysia",
+      dates: "Jul 2022 – Nov 2023",
+      scholarships: ["Sunway Entrance Scholarship", "JPA LSPM Scholarship"],
+      detailLabel: "Grades",
+      detailItems: ["4 A* grades"],
+    },
+  ] as EducationEntry[],
+};
+
 export const hobbies = {
   heading: "Beyond the code",
   intro:
