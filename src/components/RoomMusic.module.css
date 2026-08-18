@@ -1,0 +1,66 @@
+/* Small, calm music toggle. Sized with the same clamped `--ui` model as the
+   rest of the monitor UI so it never becomes microscopic. */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(6px * var(--ui));
+  padding: calc(5px * var(--ui)) calc(11px * var(--ui)) calc(5px * var(--ui))
+    calc(8px * var(--ui));
+  border: 1px solid var(--beige-200);
+  border-radius: 999px;
+  background: rgba(255, 253, 249, 0.72);
+  color: var(--ink-400);
+  font-size: max(12px, calc(13px * var(--ui)));
+  font-weight: 500;
+  letter-spacing: 0.002em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    background-color var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+}
+
+.button:hover,
+.button:focus-visible {
+  color: var(--peach-deeper);
+  border-color: var(--blush);
+  background: var(--warm-white);
+  box-shadow: 0 2px 10px rgba(150, 108, 84, 0.1);
+}
+
+/* Playing: warm tint so the state is obvious without extra text. */
+.button[aria-pressed="true"] {
+  color: var(--peach-deeper);
+  border-color: var(--blush);
+  background: rgba(245, 228, 222, 0.55);
+}
+
+.icon {
+  flex: none;
+  width: max(13px, calc(15px * var(--ui)));
+  height: max(13px, calc(15px * var(--ui)));
+}
+
+.label {
+  /* Hidden on very small monitors — the icon and aria-label still carry it. */
+  display: inline;
+}
+
+@container (max-width: 520px) {
+  .label { display: none; }
+  .button { padding: calc(6px * var(--ui)); }
+}
+
+@media (max-width: 640px), (max-aspect-ratio: 4 / 5) {
+  .button {
+    padding: 6px 12px 6px 9px;
+    font-size: 12.5px;
+    gap: 6px;
+  }
+
+  .icon { width: 15px; height: 15px; }
+  .label { display: inline; }
+}

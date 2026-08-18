@@ -1,0 +1,85 @@
+/* ===========================================================================
+   About-page photography.
+
+   The photograph sits DIRECTLY on the page: no background, no border, no
+   padding, no shadow, no letterboxing. Only one subtle radius on the image
+   itself — never a second layer around it.
+
+   Scoped to the About page; project screenshots, logos, icons, navigation
+   graphics and the room video are untouched.
+   =========================================================================== */
+
+.media {
+  display: block;
+  position: relative;
+  line-height: 0; /* no descender gap under the image */
+  min-width: 0;
+}
+
+/* Interactive variant — a real button, but visually just the photograph. */
+.button {
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+  border-radius: 6px;
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+/* MODE 1 — natural ratio. Height is set by the gallery rail; the width
+   follows the image's own proportions, so portraits stay narrow and tall. */
+.natural {
+  display: block;
+  height: 100%;
+  width: auto;
+  max-width: none;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+/* MODE 2 — editorial crop at a fixed ratio. `object-position` is set per
+   image from the data file so faces stay visible. */
+.cover {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 6px;
+  transition: transform var(--dur) var(--ease);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .button:hover .cover { transform: scale(1.015); }
+}
+
+/* Restrained play affordance for video thumbnails. */
+.play {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.playIcon {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  color: #fffdf9;
+  background: rgba(38, 32, 28, 0.42);
+  transition: background-color var(--dur) var(--ease);
+}
+
+.button:hover .playIcon,
+.button:focus-visible .playIcon {
+  background: rgba(38, 32, 28, 0.58);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cover, .playIcon { transition: none; }
+  .button:hover .cover { transform: none; }
+}

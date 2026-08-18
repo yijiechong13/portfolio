@@ -1,0 +1,567 @@
+/* ===========================================================================
+   Monitor dashboard.
+
+   Sizing model — this is the important part:
+   `--ui` is a single scale factor derived from the monitor's width, but it is
+   CLAMPED. Below the floor the text stops shrinking, which is what stops the
+   "microscopic text" problem when the browser narrows. Every size below is
+   `calc(<px> * var(--ui))` with a `max()` floor on anything text-bearing, so
+   nothing important can fall under ~12px.
+
+   Do NOT reintroduce raw `cqi`/`vw` font sizes here.
+   =========================================================================== */
+
+.monitor {
+  position: absolute;
+  left: var(--monitor-left);
+  top: var(--monitor-top);
+  width: var(--monitor-width);
+  height: var(--monitor-height);
+  pointer-events: none; /* only the UI inside is interactive */
+  /* Explicit stacking context above the video. Without this, a descendant's
+     z-index (the portrait glow) can push the whole panel behind the video. */
+  z-index: 1;
+  isolation: isolate;
+  /* `size` (not `inline-size`) so the max-height guards below actually match.
+     Safe here because .monitor has an explicit height from the calibration. */
+  container-type: size;
+
+  /* Scale factor: 1 at ~940px of monitor width, clamped at both ends so the
+     UI never collapses (floor) or balloons (ceiling). `--ui-px` is a length
+     so clamp() resolves; `--ui` divides it back down to a unitless factor. */
+  --ui-px: clamp(0.72px, calc(100cqi / 900), 1.06px);
+
+  /* Overall density of the monitor UI. Everything inside — type, portrait,
+     gaps, padding — is expressed as `<px> * var(--ui)`, and every clamp bound
+     is multiplied by `--ui-scale` too, so lowering this shrinks the whole
+     screen UNIFORMLY instead of letting the floors absorb the reduction.
+     Real sizes change; there is no transform: scale(), so text stays sharp
+     and hit areas stay exactly where they are painted. */
+  --ui-scale: 0.89;
+  /* Text floors are `max(12px, <floor> * --ui-scale)`: the scale applies until
+     a size would drop under 12px, which this file has always treated as the
+     readability minimum. Lowering --ui-scale further shrinks the large type
+     but will not push small labels below that line. */
+  --ui: calc(tan(atan2(var(--ui-px), 1px)) * var(--ui-scale));
+}
+
+.screen {
+  pointer-events: auto;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: calc(10px * var(--ui));
+  padding: calc(13px * var(--ui)) calc(30px * var(--ui)) calc(15px * var(--ui));
+  min-height: 0;
+}
+
+/* ============================================================== top bar */
+
+.topbar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(16px * var(--ui));
+  padding: calc(3px * var(--ui)) 0 calc(14px * var(--ui));
+  border-bottom: 1px solid var(--beige-100);
+}
+
+/* Quiet personal wordmark — no pill, circle or outline. */
+.wordmark {
+  font-size: max(12px, calc(14px * var(--ui-scale)), calc(17px * var(--ui)));
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--ink-900);
+  white-space: nowrap;
+  padding: calc(4px * var(--ui)) calc(2px * var(--ui));
+  transition: color var(--dur) var(--ease), opacity var(--dur) var(--ease);
+}
+
+.wordmark:hover,
+.wordmark:focus-visible {
+  color: var(--peach-deeper);
+}
+
+.topbarEnd {
+  display: flex;
+  align-items: center;
+  gap: clamp(calc(16px * var(--ui-scale)), calc(28px * var(--ui)), calc(34px * var(--ui-scale)));
+  min-width: 0;
+}
+
+.topnav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: clamp(calc(24px * var(--ui-scale)), calc(40px * var(--ui)), calc(48px * var(--ui-scale)));
+}
+
+.topnavLink {
+  position: relative;
+  display: inline-block;
+  padding: calc(5px * var(--ui)) 0;
+  font-size: clamp(max(12px, calc(14px * var(--ui-scale))), calc(16px * var(--ui)), calc(15px * var(--ui-scale)));
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--ink-400);
+  white-space: nowrap;
+  transition: color var(--dur) var(--ease);
+}
+
+/* Warm underline grows from the left on hover. */
+.topnavLink::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1.5px;
+  border-radius: 2px;
+  background: var(--peach-deep);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur) var(--ease);
+}
+
+.topnavLink:hover,
+.topnavLink:focus-visible { color: var(--peach-deep); }
+
+.topnavLink:hover::after,
+.topnavLink:focus-visible::after { transform: scaleX(1); }
+
+/* ================================================================= body */
+
+.body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  justify-content: center;   /* never space-between across an ultrawide screen */
+  align-items: center;
+  overflow: hidden;
+}
+
+/* Centred hero band. The monitor is ultrawide, so without a max-width the two
+   columns drift to the far edges and the middle reads as empty. This keeps the
+   text and portrait feeling like one connected hero, like a real website. */
+.heroContent {
+  width: min(100%, calc(1120px * var(--ui)));
+  height: 100%;
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.95fr) minmax(0, 1fr);
+  gap: clamp(calc(24px * var(--ui-scale)), calc(52px * var(--ui)), calc(64px * var(--ui-scale)));
+  align-items: center;
+  min-height: 0;
+}
+
+/* ---------------------------------------------------------------- hero */
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.headline {
+  margin: 0;
+  /* Clean sans, not the display serif — this reads as a modern portfolio. */
+  font-family: var(--font-sans);
+  font-weight: 700;
+  /* 56-72px at full size, floored so it never goes tiny. */
+  font-size: clamp(calc(28px * var(--ui-scale)), calc(66px * var(--ui)), calc(72px * var(--ui-scale)));
+  letter-spacing: -0.02em;
+  line-height: 1.0;
+  color: var(--ink-900);
+  text-wrap: pretty;
+  font-feature-settings: "cv11", "ss01";
+}
+
+/* The name picks up the terracotta accent — same weight and size, warmth only.
+   Not a different face, not italic; that read as gimmicky.
+   Uses the deeper tone: #c98263 measures 2.96:1 on the cream screen, just under
+   the 3.0 large-text contrast floor. */
+.headlineName {
+  color: var(--peach-deeper);
+}
+
+.subtitle {
+  margin: calc(4px * var(--ui)) 0 0;
+  font-size: clamp(max(12px, calc(15px * var(--ui-scale))), calc(19px * var(--ui)), calc(20px * var(--ui-scale)));
+  font-weight: 600;
+  line-height: 1.3;
+  max-width: min(100%, 62ch);
+  letter-spacing: -0.005em;
+  color: var(--ink-700);
+}
+
+.blurb {
+  margin: calc(7px * var(--ui)) 0 0;
+  /* Use the full column, capped by reading measure rather than an absolute
+     px value — a px cap collapses when `--ui` sits near its floor. */
+  max-width: min(100%, calc(600px * var(--ui)));
+  font-size: clamp(max(12px, calc(14.5px * var(--ui-scale))), calc(17px * var(--ui)), calc(17.5px * var(--ui-scale)));
+  line-height: 1.6;
+  letter-spacing: 0.002em;
+  color: var(--ink-700);
+  text-wrap: pretty;
+}
+
+/* ------------------------------------------------------------- actions */
+
+.actions {
+  margin-top: calc(11px * var(--ui));
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: calc(10px * var(--ui));
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(7px * var(--ui));
+  padding: calc(11px * var(--ui)) calc(20px * var(--ui));
+  border-radius: 999px;
+  font-size: clamp(max(12px, calc(13px * var(--ui-scale))), calc(16px * var(--ui)), calc(16px * var(--ui-scale)));
+  font-weight: 600;
+  letter-spacing: 0.002em;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  transition:
+    transform var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease),
+    background-color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+
+.btnPrimary {
+  background: var(--peach-deep);
+  color: #fffdfa;
+  box-shadow: 0 3px 12px rgba(201, 130, 99, 0.26);
+}
+
+.btnPrimary:hover,
+.btnPrimary:focus-visible {
+  transform: translateY(-2px);
+  background: var(--peach-deeper);
+  box-shadow: 0 8px 22px rgba(201, 130, 99, 0.32);
+}
+
+.btnGhost {
+  background: rgba(255, 253, 249, 0.8);
+  border-color: #e7d3c3;
+  color: var(--ink-700);
+}
+
+.btnGhost:hover,
+.btnGhost:focus-visible {
+  transform: translateY(-2px);
+  border-color: var(--blush);
+  background: var(--warm-white);
+  box-shadow: var(--shadow-md);
+}
+
+.btn:active { transform: translateY(0); }
+
+.arrow {
+  flex: none;
+  width: max(calc(12px * var(--ui-scale)), calc(15px * var(--ui)));
+  height: max(calc(12px * var(--ui-scale)), calc(15px * var(--ui)));
+  transition: transform var(--dur) var(--ease);
+}
+
+.btnPrimary:hover .arrow,
+.btnPrimary:focus-visible .arrow { transform: translateX(3px); }
+
+/* ============================================================== portrait */
+
+.portrait {
+  min-width: 0;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  /* Sits toward the text rather than pinned to the far edge. */
+  justify-content: flex-start;
+  /* `size` so the panel's `cqh` sizing has a height to resolve against. */
+  container-type: size;
+}
+
+/* ============================================================= quick nav
+   Compact section links. Desktop navigates via the top bar and the two CTAs,
+   so this row only appears on small screens. */
+
+.quickNav { display: none; }
+
+.quickNav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.quickLink {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 0.15rem 0.5rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--beige-200);
+  border-radius: 13px;
+  background: rgba(255, 253, 249, 0.8);
+  box-shadow: var(--shadow-sm);
+  transition:
+    transform var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    background-color var(--dur) var(--ease);
+}
+
+.quickLabel {
+  grid-column: 1;
+  font-size: 0.88rem;
+  font-weight: 500;
+  letter-spacing: -0.008em;
+  color: var(--ink-900);
+}
+
+.quickHint {
+  grid-column: 1;
+  font-size: 0.74rem;
+  color: var(--ink-400);
+}
+
+.quickLink .arrow {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  width: 14px;
+  height: 14px;
+  color: var(--peach);
+}
+
+.quickLink:hover,
+.quickLink:focus-visible {
+  transform: translateY(-2px);
+  border-color: var(--blush);
+  background: var(--warm-white);
+  box-shadow:
+    var(--shadow-md),
+    0 0 0 3px rgba(233, 201, 192, 0.26);
+}
+
+.quickLink:active { transform: translateY(0); }
+
+@media (prefers-reduced-motion: reduce) {
+  .quickLink:hover, .quickLink:focus-visible,
+  .btn:hover, .btn:focus-visible { transform: none; }
+  .eq i { animation: none; }
+  .btnPrimary:hover .arrow { transform: none; }
+}
+
+/* ====================================================== medium screens
+   The monitor is a wide, short rectangle (~2.5:1). Once it gets small the
+   two-column body no longer fits comfortably, so drop the right-hand card
+   grid and let the hero use the full width. The top nav still covers those
+   destinations, so nothing becomes unreachable. */
+@container (max-width: 600px) {
+  /* Genuinely too narrow for two columns — give the hero the full screen and
+     rely on the top nav for the four destinations. The portrait is the point
+     of this design, so it is only dropped as a last resort. */
+  .heroContent { grid-template-columns: 1fr; }
+  .portrait { display: none; }
+  .blurb { max-width: 100%; }
+  /* With the portrait gone there is room to honour the spec type scale. */
+  .headline { font-size: max(calc(32px * var(--ui-scale)), calc(52px * var(--ui))); }
+  .subtitle { font-size: max(12px, calc(15px * var(--ui-scale)), calc(17.5px * var(--ui))); }
+  .blurb { font-size: max(12px, calc(14px * var(--ui-scale)), calc(15.5px * var(--ui))); }
+  .btn { font-size: max(12px, calc(14px * var(--ui-scale)), calc(15px * var(--ui))); }
+  .topnavLink { font-size: max(12px, calc(13px * var(--ui-scale)), calc(14px * var(--ui))); }
+}
+
+/* Mid-width monitors: keep the portrait but let the hero take more room.
+   No blurb max-width here — the intro is long and needs its full column. */
+@container (min-width: 601px) and (max-width: 820px) {
+  .heroContent {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: clamp(calc(20px * var(--ui-scale)), calc(40px * var(--ui)), calc(48px * var(--ui-scale)));
+  }
+}
+
+/* Short monitors: shed the least important content before anything overflows.
+   Order of sacrifice — clamp the blurb, then drop it entirely. */
+@container (max-height: 303px) {
+  /* The intro paragraph is the only elastic block, so it gives way first —
+     the buttons must never be pushed past the bezel. Keep the standard and
+     -webkit- properties in step; they disagreed here once (4 vs 3). */
+  .blurb {
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+/* Step down one line at a time. Thresholds were measured against the real
+   layout; they are re-scaled by --ui-scale because a smaller body size needs
+   proportionally less height per line — keeping the old numbers would clamp
+   the paragraph earlier than necessary and hide text that now fits.
+   Previously 300 / 258 / 215px at the unscaled size. */
+@container (max-height: 267px) {
+  .blurb { -webkit-line-clamp: 4; line-clamp: 4; }
+}
+
+@container (max-height: 230px) {
+  .screen { gap: calc(7px * var(--ui)); }
+  .blurb { -webkit-line-clamp: 3; line-clamp: 3; margin-top: calc(5px * var(--ui)); }
+  .actions { margin-top: calc(9px * var(--ui)); }
+}
+
+@container (max-height: 191px) {
+  .blurb { -webkit-line-clamp: 2; line-clamp: 2; }
+}
+
+/* Extremely short: drop the paragraph so the CTAs and nav survive. */
+@container (max-height: 185px) {
+  .blurb { display: none; }
+}
+
+/* ==================================================== intermediate widths
+   641-900px: the monitor is still clearly visible, so the overlay STAYS
+   inside it. Just tighten spacing and shrink the portrait — do not fall back
+   to the floating card here, which used to happen and looked wrong with the
+   monitor still visible behind it. */
+@media (min-width: 769px) and (max-width: 900px) and (min-aspect-ratio: 4 / 5) {
+  .screen {
+    gap: calc(6px * var(--ui));
+    padding: calc(9px * var(--ui)) calc(16px * var(--ui)) calc(10px * var(--ui));
+  }
+
+  .topbar { padding-bottom: calc(5px * var(--ui)); }
+  .topnav ul { gap: calc(14px * var(--ui)); }
+
+  .heroContent {
+    grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr);
+    gap: clamp(18px, calc(32px * var(--ui)), 40px);
+  }
+
+  .blurb {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+/* ========================================================== true mobile
+   640px and below, OR a window so portrait that `object-fit: cover` pushes the
+   monitor off both edges (below 4:5 the bezel is cropped away and content
+   would be cut off). The old rule used 1/1, which fired far too eagerly on
+   ordinary desktop windows. */
+@media (max-width: 768px), (max-aspect-ratio: 4 / 5) {
+  /* An independent floating panel in normal flow — NOT pinned to the
+     monitor's calibrated coordinates, which are meaningless once the video
+     is replaced by a cropped still. No transform: scale() anywhere. */
+  .monitor {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    /* The stage already applies the 16px page margins, so the panel simply
+       fills the remaining width — subtracting 32px again would double-inset
+       it and leave the panel narrower than intended. */
+    width: 100%;
+    max-width: 30rem;
+    /* Height follows content; the page scrolls if it runs long. */
+    height: auto;
+    max-height: none;
+    margin-inline: auto;
+    container-type: normal;
+    --ui: 1; /* fixed, readable sizing — no monitor-relative scaling */
+  }
+
+  .screen {
+    height: auto;
+    max-height: none;
+    overflow-y: visible;
+    gap: 0.7rem;
+    padding: 1rem 1.05rem 1.05rem;
+    border: 1px solid var(--beige-200);
+    border-radius: 22px;
+    background: rgba(255, 253, 249, 0.93);
+    backdrop-filter: blur(7px);
+    box-shadow: var(--shadow-lg);
+    container-type: normal;
+  }
+
+  /* The in-monitor top nav is redundant with the cards on mobile. */
+  .topbar {
+    justify-content: flex-start;
+    gap: 0.7rem;
+    padding-bottom: 0.7rem;
+  }
+
+  .topnav { display: none; }
+
+  .wordmark { font-size: 16px; padding: 4px 2px; }
+
+  /* Restore the card grid that medium screens hide. */
+  /* Photo above the intro, then the section links. */
+  /* Desktop gives .body `flex: 1` and a fixed row height; on mobile it must
+     size to its content or the hero and nav overlap. */
+  .body {
+    display: block;
+    overflow: visible;
+    flex: 0 0 auto;
+    min-height: 0;
+    height: auto;
+  }
+
+  .heroContent {
+    width: 100%;
+    height: auto;
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+    align-items: start;
+  }
+  .portrait {
+    display: flex;
+    order: -1;
+    height: auto;
+    container-type: normal; /* `size` collapses in an auto-height row */
+  }
+  .quickNav { display: block; }
+  .quickNav ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  .headline { font-size: 1.7rem; }
+  .subtitle { font-size: 0.92rem; margin-top: 0.3rem; }
+  .blurb { font-size: 0.88rem; max-width: none; margin-top: 0.45rem; }
+
+  .actions { margin-top: 0.7rem; gap: 0.45rem; }
+
+  .btn {
+    flex: 1;
+    min-height: 44px; /* comfortable tap target */
+    padding: 0.62rem 0.9rem;
+    font-size: 0.88rem;
+  }
+
+  .quickLink { padding: 0.5rem 0.6rem; border-radius: 12px; }
+  .quickLabel { font-size: 0.83rem; }
+  .quickHint { font-size: 0.71rem; }
+
+  /* Stack the two status items on the narrowest phones. */
+  @media (max-width: 430px) {
+    .headline { font-size: 1.75rem; }
+    .btn { font-size: 0.88rem; padding: 0.65rem 0.85rem; }
+    .quickNav ul { grid-template-columns: 1fr; }
+  }
+}

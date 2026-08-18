@@ -1,0 +1,374 @@
+/* ===========================================================================
+   About page — borderless editorial layout.
+
+   Hierarchy comes from typography, whitespace and thin dividers, NOT from
+   filled cards. Photographs sit directly on the page:
+       page background → photograph and text
+   never
+       page background → cream card → cream image frame → photograph
+
+   Buttons, tags and the CTA keep their interactive styling on purpose.
+   =========================================================================== */
+
+.page {
+  min-height: 100dvh;
+  padding: clamp(1.25rem, 4vw, 2.5rem) var(--page-pad) clamp(3rem, 7vw, 5rem);
+  background:
+    radial-gradient(90% 70% at 50% 0%, var(--warm-white) 0%, var(--cream) 55%,
+      var(--beige-50) 100%);
+  overflow-x: hidden;
+}
+
+.shell {
+  /* Shared outer container — see theme.css. */
+  width: min(var(--page-max), 100%);
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  /* 72-96px between major sections on desktop, 48-64px on mobile. */
+  gap: clamp(3rem, 6vw, 5.5rem);
+}
+
+/* --------------------------------------------------------------- topbar */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  --ui: 1;
+}
+
+/* A button, so it keeps its affordance. */
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 44px;
+  padding: 0.5rem 0.9rem 0.5rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--beige-200);
+  background: rgba(255, 253, 249, 0.8);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--ink-700);
+  transition:
+    transform var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
+}
+
+.back:hover,
+.back:focus-visible {
+  transform: translateY(-1px);
+  border-color: var(--blush);
+}
+
+/* ------------------------------------------------------------ dividers */
+
+.divider {
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--beige-100);
+}
+
+/* ----------------------------------------------------------- typography */
+
+.h1 {
+  margin: 0;
+  font-size: clamp(1.95rem, 4.4vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -0.028em;
+  line-height: 1.04;
+  color: var(--ink-900);
+}
+
+.h2 {
+  margin: 0;
+  font-size: clamp(1.35rem, 2.8vw, 1.85rem);
+  font-weight: 650;
+  letter-spacing: -0.022em;
+  line-height: 1.14;
+  color: var(--ink-900);
+}
+
+.h3 {
+  margin: 0;
+  font-size: clamp(1.05rem, 2vw, 1.22rem);
+  font-weight: 600;
+  letter-spacing: -0.014em;
+  line-height: 1.25;
+  color: var(--ink-900);
+}
+
+.h4 {
+  margin: 0;
+  font-size: clamp(0.98rem, 1.7vw, 1.08rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  color: var(--ink-900);
+}
+
+/* ~55-70 characters per line. */
+.lead {
+  margin: 1rem 0 0;
+  max-width: var(--measure);
+  font-size: clamp(1rem, 1.9vw, 1.1rem);
+  line-height: 1.68;
+  color: var(--ink-700);
+}
+
+.sectionIntro {
+  margin: 0.6rem 0 0;
+  max-width: var(--measure);
+  font-size: clamp(0.94rem, 1.7vw, 1.01rem);
+  line-height: 1.62;
+  color: var(--ink-500);
+}
+
+.body {
+  margin: 0.4rem 0 0;
+  max-width: var(--measure);
+  font-size: clamp(0.9rem, 1.6vw, 0.97rem);
+  line-height: 1.62;
+  color: var(--ink-500);
+}
+
+.bodySm {
+  margin: 0.35rem 0 0;
+  max-width: var(--measure);
+  font-size: clamp(0.88rem, 1.5vw, 0.94rem);
+  line-height: 1.6;
+  color: var(--ink-500);
+}
+
+.org {
+  margin: 0.15rem 0 0;
+  font-size: clamp(0.86rem, 1.5vw, 0.92rem);
+  font-weight: 600;
+  color: var(--peach-deeper);
+}
+
+.section { min-width: 0; }
+.intro { min-width: 0; }
+
+/* ---------------------------------------------------- hobbies (vertical) */
+
+/* One column at EVERY viewport — Volleyball, Piano, Photography stacked, each
+   reading title → description → media. Never side by side. */
+.hobbies {
+  margin-top: clamp(1.5rem, 3vw, 2.25rem);
+  display: flex;
+  flex-direction: column;
+  /* Larger gap between hobbies than inside them: 64-88px desktop, 48-64 mobile. */
+  gap: clamp(3rem, 5.5vw, 5.5rem);
+}
+
+.hobby {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Heading → description: small gap. */
+.hobby .h3 { margin-bottom: 0.55rem; }
+
+/* Comfortable reading measure; the media below may run wider. */
+.hobbyText {
+  margin: 0;
+  max-width: var(--measure);
+  font-size: clamp(0.94rem, 1.7vw, 1.01rem);
+  line-height: 1.62;
+  color: var(--ink-500);
+}
+
+/* Description → photograph: moderate gap. */
+.hobbyMedia { margin-top: 1.35rem; }
+
+/* Leaves room for the gallery rail controls, which sit top-right. */
+.hobby:has([class*="rail"]) .hobbyText { padding-right: 6rem; }
+
+/* ---------------------------------------------------------- involvement */
+
+.involvementHead {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+/* Small metadata, not a filled box. */
+.period {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--peach-deeper);
+}
+
+/* One column at EVERY viewport. Each entry is self-contained: its photograph
+   sits directly beneath its own text, never beside another entry's. */
+.entries {
+  list-style: none;
+  margin: clamp(1.75rem, 3.5vw, 2.5rem) 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  /* 72-96px between entries on desktop, 52-68px on mobile. */
+  gap: clamp(3.25rem, 5.5vw, 5.5rem);
+  counter-reset: entry;
+}
+
+.entry {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  /* Text and media share one left edge — no indenting, no centring. */
+  align-items: flex-start;
+}
+
+/* Role — strongest text in the entry. */
+.entryRole {
+  margin: 0;
+  font-size: clamp(1.04rem, 2vw, 1.2rem);
+  font-weight: 650;
+  letter-spacing: -0.014em;
+  line-height: 1.25;
+  color: var(--ink-900);
+}
+
+/* Organisation — muted peach, visibly tied to the role above it. */
+.entryOrg {
+  margin: 0.3rem 0 0;
+  font-size: clamp(0.9rem, 1.6vw, 0.98rem);
+  font-weight: 600;
+  color: var(--peach-deeper);
+}
+
+/* Dates — small muted metadata. */
+.entryDates {
+  margin: 0.25rem 0 0;
+  font-size: 0.82rem;
+  color: var(--ink-400);
+}
+
+.entryText {
+  margin: 0.65rem 0 0;
+  max-width: var(--measure);
+  font-size: clamp(0.9rem, 1.6vw, 0.97rem);
+  line-height: 1.65;
+  color: var(--ink-500);
+}
+
+/* Metric — restrained emphasis, no filled pill. */
+.highlight {
+  margin: 0.85rem 0 0;
+  font-size: 0.89rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--peach-deeper);
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 44px;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--peach-deeper);
+  transition: color var(--dur) var(--ease);
+}
+
+.link:hover,
+.link:focus-visible { color: var(--terracotta-deep); }
+.link:hover .linkIcon { transform: translate(1px, -1px); }
+
+.linkIcon {
+  width: 13px;
+  height: 13px;
+  transition: transform var(--dur) var(--ease);
+}
+
+/* The photograph belongs to the entry above it. Capped so it stays a feature
+   rather than filling the browser; aligned to the same left edge as the text. */
+.entryMedia {
+  margin-top: 1.35rem;
+  width: 100%;
+  max-width: min(100%, 60rem);
+}
+
+/* Portrait sources: natural ratio, capped height so they never dominate the
+   page. Width follows the image; left edge stays aligned with the text. */
+/* Rail inside a campus entry — same treatment as the hobby rails, aligned to
+   the entry's left edge. */
+.entryRail {
+  width: 100%;
+  max-width: min(100%, 60rem);
+  margin-top: 0.35rem;
+}
+
+.entryMediaTall {
+  margin-top: 1.35rem;
+  display: block;
+  height: clamp(360px, 52vh, 560px);
+}
+
+.entryMediaTall img {
+  height: 100%;
+  width: auto;
+  max-width: 100%;
+}
+
+/* ------------------------------------------------------------------ cta */
+
+.cta { min-width: 0; }
+
+/* A real button — interactive styling is deliberately kept. */
+.ctaButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 44px;
+  margin-top: 1.2rem;
+  padding: 0.72rem 1.35rem;
+  border-radius: 999px;
+  background: var(--peach-deep);
+  color: #fffdfa;
+  font-size: 0.96rem;
+  font-weight: 600;
+  transition:
+    transform var(--dur) var(--ease),
+    background-color var(--dur) var(--ease);
+}
+
+.ctaButton:hover,
+.ctaButton:focus-visible {
+  transform: translateY(-2px);
+  background: var(--peach-deeper);
+}
+
+.arrowIcon { width: 15px; height: 15px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .back:hover,
+  .ctaButton:hover,
+  .ctaButton:focus-visible { transform: none; }
+  .link:hover .linkIcon { transform: none; }
+}
+
+/* ------------------------------------------------------------ responsive */
+
+@media (max-width: 860px) {
+  .hobby:has([class*="rail"]) .hobbyText { padding-right: 0; }
+}
+
+@media (max-width: 640px) {
+  /* Media may use the full width on mobile. */
+  .entryMedia { max-width: none; }
+  .entryRail { max-width: none; }
+  .entryMediaTall { height: auto; max-height: 74vh; }
+  .entryMediaTall img { height: auto; max-height: 74vh; }
+}

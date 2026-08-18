@@ -1,0 +1,73 @@
+/* ===========================================================================
+   Hero portrait — a single clean rounded-rectangle image card.
+
+   One border, one shadow. No rings, no caption, no panel behind it. The photo
+   is warm enough on its own to sit on the monitor's cream screen; extra
+   framing made it look like a sticker.
+   =========================================================================== */
+
+.card {
+  margin: 0;
+  height: 100%;
+  max-height: 100%;
+  /* Width follows the height at 4:5, bounded by the column. */
+  width: min(100%, calc(100cqh * 0.7));
+  aspect-ratio: 4 / 5;
+  /* ~12% smaller than before, so the photo supports the intro. Multiplied by
+     --ui-scale as well: this card sizes from `cqh`, not from `--ui`, so
+     without this it would be the one element that ignores the overall
+     density setting and end up oversized against the shrunken type. */
+  max-height: calc(88% * var(--ui-scale, 1));
+  margin-inline: auto;
+
+  overflow: hidden;
+  border-radius: clamp(
+    calc(18px * var(--ui-scale, 1)),
+    calc(28px * var(--ui)),
+    calc(32px * var(--ui-scale, 1))
+  );
+  border: 1px solid rgba(201, 130, 99, 0.22);
+  background: var(--beige-50);
+  /* One soft warm shadow — enough to lift it off the screen, nothing more. */
+  box-shadow: 0 10px 30px rgba(150, 108, 84, 0.15);
+  transition: box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 38px rgba(150, 108, 84, 0.19);
+}
+
+.photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Face, upper body, dress and bouquet. */
+  object-position: var(--portrait-focus, 38% 66%);
+}
+
+.fallback {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(160deg, #f7e7dd 0%, #ecd3c6 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card:hover { transform: none; }
+}
+
+/* ------------------------------------------------------- true mobile only
+   The floating card is auto-height, so `cqh` has no basis — size explicitly. */
+@media (max-width: 640px), (max-aspect-ratio: 4 / 5) {
+  .card {
+    height: auto;
+    width: min(64%, 220px);
+    max-height: none;
+    border-radius: 24px;
+  }
+}
+
+@media (max-width: 430px) {
+  .card { width: min(70%, 195px); }
+}

@@ -1,0 +1,113 @@
+/* Full-screen viewer. Dark backdrop only while open — never in page layout. */
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: clamp(1rem, 4vw, 3rem);
+  background: rgba(38, 32, 28, 0.92);
+  animation: fade var(--dur) var(--ease);
+}
+
+@keyframes fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.dialog {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* The complete photograph — no frame, no mat, nothing cropped. */
+.image {
+  display: block;
+  max-width: 100%;
+  max-height: calc(100dvh - 9rem);
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.caption {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: rgba(255, 253, 249, 0.78);
+  text-align: center;
+}
+
+.counter { color: rgba(255, 253, 249, 0.55); }
+
+/* ------------------------------------------------------------- controls */
+
+.close,
+.nav {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(255, 253, 249, 0.22);
+  border-radius: 50%;
+  background: rgba(38, 32, 28, 0.5);
+  color: rgba(255, 253, 249, 0.9);
+  cursor: pointer;
+  transition:
+    background-color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
+}
+
+.close:hover,
+.close:focus-visible,
+.nav:hover,
+.nav:focus-visible {
+  background: rgba(255, 253, 249, 0.14);
+  border-color: rgba(255, 253, 249, 0.45);
+}
+
+.close:focus-visible,
+.nav:focus-visible {
+  outline: 2px solid rgba(255, 253, 249, 0.9);
+  outline-offset: 2px;
+}
+
+.close { top: 0; right: 0; }
+.prev { left: 0; top: 50%; transform: translateY(-50%); }
+.next { right: 0; top: 50%; transform: translateY(-50%); }
+
+.icon { width: 19px; height: 19px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .backdrop { animation: none; }
+  .close, .nav { transition: none; }
+}
+
+@media (max-width: 640px) {
+  .prev { left: 0; }
+  .next { right: 0; }
+  .image { max-height: calc(100dvh - 11rem); }
+}
+
+/* Qualifier under the caption — quieter than the caption, still legible on
+   the dark backdrop. */
+.credit {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  opacity: 0.78;
+}

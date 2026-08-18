@@ -1,0 +1,96 @@
+/* Borderless horizontal rail. Photographs sit directly on the page. */
+
+.wrap {
+  position: relative;
+  margin-top: 1.1rem;
+}
+
+/* ---------------------------------------------------------------- rail */
+
+.rail {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0.5rem;
+  display: flex;
+  gap: 0.6rem;
+  /* Shared height; each photograph's width follows its own ratio. */
+  height: clamp(210px, 26vw, 340px);
+
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x proximity;
+  /* Horizontal scrolling stays inside the rail. */
+  overscroll-behavior-x: contain;
+  touch-action: pan-x pan-y;
+  scrollbar-width: thin;
+  scrollbar-color: var(--beige-300) transparent;
+}
+
+.rail::-webkit-scrollbar { height: 6px; }
+.rail::-webkit-scrollbar-track { background: transparent; }
+.rail::-webkit-scrollbar-thumb {
+  background: var(--beige-200);
+  border-radius: 999px;
+}
+
+.slide {
+  flex: none;
+  /* Definite height so the image's `height: 100%` resolves and its width can
+     follow the source ratio. */
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  scroll-snap-align: start;
+}
+
+/* The button wrapper must pass the height through to the image. */
+.slide > * { height: 100%; }
+
+/* ------------------------------------------------------------ controls */
+
+.controls {
+  position: absolute;
+  top: -2.6rem;
+  right: 0;
+  display: flex;
+  gap: 0.3rem;
+}
+
+/* Minimal — no filled cream circle. */
+.control {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--ink-400);
+  cursor: pointer;
+  transition: color var(--dur) var(--ease), background-color var(--dur) var(--ease);
+}
+
+.control:hover:not(:disabled) {
+  color: var(--peach-deeper);
+  background: rgba(233, 201, 192, 0.22);
+}
+
+.control:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.control:disabled {
+  color: var(--beige-300);
+  cursor: default;
+}
+
+.icon { width: 20px; height: 20px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .control { transition: none; }
+}
+
+@media (max-width: 640px) {
+  .controls { top: -2.5rem; }
+}

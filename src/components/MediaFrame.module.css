@@ -1,0 +1,61 @@
+.frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+  background: var(--beige-50);
+  border: 1px solid var(--beige-100);
+  width: 100%;
+}
+
+.img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform var(--dur) var(--ease);
+}
+
+/* Show the whole image instead of cropping it. Used by the gallery, where
+   portrait sources lost ~45% of the frame to a landscape box. The warm mat
+   fills the leftover space, and the box keeps its fixed ratio so nothing
+   shifts when the orientation changes between slides. */
+.contain {
+  background:
+    linear-gradient(160deg, var(--blush-soft) 0%, var(--beige-50) 55%,
+      var(--cream) 100%);
+}
+
+.contain .img {
+  object-fit: contain;
+}
+
+/* Placeholder tile — warm neutral, with its name legible. */
+.placeholder {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 0.75rem;
+  text-align: center;
+  background:
+    linear-gradient(150deg, var(--blush-soft) 0%, var(--beige-50) 60%, var(--cream) 100%);
+}
+
+.placeholderLabel {
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-400);
+}
+
+/* Zoom only where a real pointer exists, and never under reduced motion. */
+@media (hover: hover) and (pointer: fine) {
+  .zoom:hover .img { transform: scale(1.04); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .img { transition: none; }
+  .zoom:hover .img { transform: none; }
+}

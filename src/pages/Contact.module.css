@@ -1,0 +1,195 @@
+/* ===========================================================================
+   Contact. Same warm system as the rest of the site: shared page width,
+   ink ramp and pill buttons. Three channels only.
+   =========================================================================== */
+
+.page {
+  min-height: 100dvh;
+  padding: clamp(1.25rem, 4vw, 2.5rem) var(--page-pad) clamp(3rem, 7vw, 5rem);
+  background:
+    radial-gradient(90% 70% at 50% 0%, var(--warm-white) 0%, var(--cream) 55%,
+      var(--beige-50) 100%);
+  overflow-x: hidden;
+}
+
+.shell {
+  width: min(var(--page-max), 100%);
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2rem, 5vw, 3.5rem);
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  --ui: 1;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 44px;
+  padding: 0.5rem 0.9rem 0.5rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--beige-200);
+  background: rgba(255, 253, 249, 0.8);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--ink-700);
+  transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+.back:hover,
+.back:focus-visible {
+  transform: translateY(-1px);
+  border-color: var(--blush);
+}
+
+.hero { min-width: 0; }
+
+.h1 {
+  margin: 0;
+  font-size: clamp(1.95rem, 4.4vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -0.028em;
+  line-height: 1.04;
+  color: var(--ink-900);
+}
+
+.lead {
+  margin: 1rem 0 0;
+  max-width: var(--measure);
+  font-size: clamp(1rem, 1.9vw, 1.1rem);
+  line-height: 1.68;
+  color: var(--ink-700);
+}
+
+.channels {
+  list-style: none;
+  margin: 1.9rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 44px;
+  padding: 0.72rem 1.35rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 0.96rem;
+  font-weight: 600;
+  transition:
+    transform var(--dur) var(--ease),
+    background-color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+}
+
+.btnPrimary {
+  background: var(--peach-deep);
+  color: #fffdfa;
+  box-shadow: 0 3px 12px rgba(201, 130, 99, 0.24);
+}
+
+.btnPrimary:hover,
+.btnPrimary:focus-visible {
+  transform: translateY(-2px);
+  background: var(--peach-deeper);
+}
+
+.btnGhost {
+  background: rgba(255, 253, 249, 0.85);
+  border-color: var(--beige-200);
+  color: var(--ink-700);
+}
+
+.btnGhost:hover,
+.btnGhost:focus-visible {
+  transform: translateY(-2px);
+  border-color: var(--blush);
+  box-shadow: var(--shadow-md);
+}
+
+.icon { width: 13px; height: 13px; }
+
+/* ------------------------------------------------------------ email row
+
+   The address in plain text under the buttons: the button is the ACTION, this
+   is the value, for anyone who would rather paste it elsewhere. Quiet by
+   design — it must not compete with the primary CTA.
+   ------------------------------------------------------------------------ */
+
+.emailRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.6rem;
+  margin: 1.1rem 0 0;
+  font-size: 0.92rem;
+  color: var(--ink-500);
+}
+
+/* Narrow phones: the EMAIL label takes its own line so the address and the
+   copy control stay together on the next one, rather than fragmenting. */
+@media (max-width: 460px) {
+  .emailRow { row-gap: 0.3rem; }
+  .emailLabel { flex: 1 0 100%; }
+}
+
+.emailLabel {
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--ink-400);
+}
+
+/* Selectable and monospaced-ish so the address is easy to read character by
+   character; `user-select: all` makes one click select the whole thing. */
+.emailValue {
+  font-weight: 500;
+  color: var(--ink-900);
+  user-select: all;
+  word-break: break-all;
+}
+
+.copy {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid var(--beige-200);
+  background: rgba(255, 253, 249, 0.85);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ink-700);
+  cursor: pointer;
+  transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+
+.copy:hover,
+.copy:focus-visible {
+  border-color: var(--blush);
+  color: var(--peach-deeper);
+}
+
+/* Buttons stack full-width on the narrowest phones. */
+@media (max-width: 460px) {
+  .channels { flex-direction: column; align-items: stretch; }
+  .btn { justify-content: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .back:hover, .btn:hover, .btn:focus-visible { transform: none; }
+}

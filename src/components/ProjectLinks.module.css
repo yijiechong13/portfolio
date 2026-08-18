@@ -1,0 +1,62 @@
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-top: 1.2rem;
+}
+
+.small { margin-top: 0.9rem; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 44px;
+  padding: 0.66rem 1.15rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 0.92rem;
+  font-weight: 600;
+  transition:
+    transform var(--dur) var(--ease),
+    background-color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+}
+
+.small .btn {
+  min-height: 40px;
+  padding: 0.5rem 0.95rem;
+  font-size: 0.87rem;
+}
+
+.primary {
+  background: var(--peach-deep);
+  color: #fffdfa;
+  box-shadow: 0 3px 12px rgba(201, 130, 99, 0.24);
+}
+
+.primary:hover,
+.primary:focus-visible {
+  transform: translateY(-2px);
+  background: var(--peach-deeper);
+}
+
+.ghost {
+  background: rgba(255, 253, 249, 0.85);
+  border-color: var(--beige-200);
+  color: var(--ink-700);
+}
+
+.ghost:hover,
+.ghost:focus-visible {
+  transform: translateY(-2px);
+  border-color: var(--blush);
+  box-shadow: var(--shadow-md);
+}
+
+.icon { width: 13px; height: 13px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .btn:hover, .btn:focus-visible { transform: none; }
+}

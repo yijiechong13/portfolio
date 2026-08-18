@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Portfolio of Chong Yi Jie, a penultimate NUS Computer Science student."
+    />
+    <meta name="theme-color" content="#fdfbf7" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Social sharing. Reuses the landing still (1920x1080) rather than
+         shipping another large asset. Update og:url once the domain is
+         final — relative URLs are not resolved by every scraper. -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Chong Yi Jie — Portfolio" />
+    <meta
+      property="og:description"
+      content="Portfolio of Chong Yi Jie, a penultimate NUS Computer Science student."
+    />
+    <meta property="og:image" content="/landing-poster.jpg" />
+    <meta property="og:image:width" content="1920" />
+    <meta property="og:image:height" content="1080" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Chong Yi Jie — Portfolio" />
+    <meta
+      name="twitter:description"
+      content="Portfolio of Chong Yi Jie, a penultimate NUS Computer Science student."
+    />
+    <meta name="twitter:image" content="/landing-poster.jpg" />
+
+    <!-- The video is desktop-only (hidden under 768px), so preloading it on a
+         phone would waste ~1.8MB of the visitor's data for a hidden element. -->
+    <link
+      rel="preload"
+      as="video"
+      href="/cozy_portfolio_tulip_loop_cool_8s.mp4"
+      media="(min-width: 769px)"
+    />
+    <title>Chong Yi Jie — Portfolio</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

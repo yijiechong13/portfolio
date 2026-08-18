@@ -1,0 +1,47 @@
+@import "./styles/theme.css";
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html, body, #root { height: 100%; }
+
+body {
+  margin: 0;
+  background: var(--cream);
+  color: var(--ink-900);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* The landing page is a fixed, full-viewport scene. */
+/* The landing scene is a fixed full-bleed composition on desktop, so the body
+   must not scroll. On mobile the scene becomes a normal-flow panel over a
+   still background and MUST scroll, so the lock is lifted there. */
+body.is-landing { overflow: hidden; }
+
+@media (max-width: 768px), (max-aspect-ratio: 4 / 5) {
+  body.is-landing { overflow: visible; }
+}
+
+a { color: inherit; text-decoration: none; }
+
+button { font: inherit; color: inherit; }
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}

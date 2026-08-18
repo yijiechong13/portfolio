@@ -1,0 +1,116 @@
+.gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  min-width: 0;
+}
+
+/* ---------------------------------------------------------------- stage */
+
+.stage {
+  position: relative;
+  /* Contains horizontal swipes so the page itself never pans sideways. */
+  touch-action: pan-y;
+  overscroll-behavior-x: contain;
+}
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  /* 44x44 minimum touch target. */
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--beige-200);
+  background: rgba(255, 253, 249, 0.92);
+  color: var(--ink-700);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition:
+    background-color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+
+.prev { left: 0.55rem; }
+.next { right: 0.55rem; }
+
+.arrow:hover,
+.arrow:focus-visible {
+  background: var(--warm-white);
+  border-color: var(--blush);
+  color: var(--peach-deeper);
+}
+
+.chevron { width: 18px; height: 18px; }
+
+/* -------------------------------------------------------------- counter */
+
+.counter {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  color: var(--ink-400);
+}
+
+.counterNum { color: var(--ink-700); }
+
+/* --------------------------------------------------------------- thumbs */
+
+.thumbs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.4rem;
+}
+
+.thumb {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  border-radius: 10px;
+  /* State is carried by the ring AND the label/aria-current, not colour alone. */
+  outline-offset: 2px;
+  transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+  opacity: 0.62;
+}
+
+.thumb:hover { opacity: 0.85; }
+
+.thumb[data-active="true"] {
+  opacity: 1;
+  box-shadow: 0 0 0 2px var(--peach-deep);
+  border-radius: 12px;
+}
+
+.thumb[data-active="true"]::after {
+  /* Non-colour cue for the active thumbnail. */
+  content: "";
+  display: block;
+  height: 2px;
+  margin: 0.3rem auto 0;
+  width: 60%;
+  border-radius: 2px;
+  background: var(--peach-deep);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thumb, .arrow { transition: none; }
+}
+
+/* ------------------------------------------------------------ narrow --- */
+
+@media (max-width: 560px) {
+  .thumbs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .prev { left: 0.35rem; }
+  .next { right: 0.35rem; }
+}

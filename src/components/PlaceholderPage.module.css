@@ -1,0 +1,83 @@
+.page {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 2rem 1.25rem;
+  background:
+    radial-gradient(90% 70% at 50% 0%, var(--warm-white) 0%, var(--cream) 55%, var(--beige-50) 100%);
+}
+
+.card {
+  width: min(34rem, 100%);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+  padding: clamp(1.75rem, 5vw, 3rem);
+  border: 1px solid var(--beige-100);
+  border-radius: 22px;
+  background: var(--warm-white);
+  box-shadow: var(--shadow-md);
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-400);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.6rem, 5vw, 2.25rem);
+  letter-spacing: -0.015em;
+  color: var(--ink-900);
+}
+
+.message {
+  margin: 0;
+  font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+  color: var(--ink-500);
+  line-height: 1.6;
+}
+
+.back {
+  margin-top: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.6rem 1.15rem;
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--ink-700);
+  border: 1px solid var(--beige-200);
+  border-radius: 999px;
+  background: var(--cream);
+  transition:
+    transform var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
+}
+
+.back:hover,
+.back:focus-visible {
+  transform: translateY(-1px);
+  border-color: var(--beige-300);
+  box-shadow: var(--shadow-md);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .back:hover,
+  .back:focus-visible { transform: none; }
+}
+
+/* Music toggle sits below the back link, quietly. */
+.music {
+  margin-top: 0.35rem;
+  /* The toggle sizes off `--ui`; these pages have no monitor scale context. */
+  --ui: 1;
+}

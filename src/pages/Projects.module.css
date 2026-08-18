@@ -1,0 +1,676 @@
+/* ===========================================================================
+   Projects page. Uses the shared width system from theme.css:
+     --page-max  outer container   --measure  readable paragraph width
+   Visual weight is deliberately unequal: flagship > featured > selected >
+   compact. All copy lives in src/data/projects.ts.
+   =========================================================================== */
+
+.page {
+  min-height: 100dvh;
+  padding: clamp(1.25rem, 4vw, 2.5rem) var(--page-pad) clamp(3rem, 7vw, 5rem);
+  background:
+    radial-gradient(90% 70% at 50% 0%, var(--warm-white) 0%, var(--cream) 55%,
+      var(--beige-50) 100%);
+  overflow-x: hidden;
+}
+
+.shell {
+  width: min(var(--page-max), 100%);
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2.5rem, 5vw, 4.5rem);
+}
+
+/* --------------------------------------------------------------- topbar */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  --ui: 1;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 44px;
+  padding: 0.5rem 0.9rem 0.5rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--beige-200);
+  background: rgba(255, 253, 249, 0.8);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--ink-700);
+  transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+.back:hover,
+.back:focus-visible {
+  transform: translateY(-1px);
+  border-color: var(--blush);
+}
+
+.divider {
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--beige-100);
+}
+
+/* ----------------------------------------------------------- typography */
+
+.h1 {
+  margin: 0.4rem 0 0;
+  font-size: clamp(1.95rem, 4.4vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -0.028em;
+  line-height: 1.04;
+  color: var(--ink-900);
+}
+
+/* Flagship heading is the largest project title on the page. */
+/* Both previews share .featured for layout; the tier is carried by the rank
+   label and this heading size. */
+.featured .h2 {
+  font-size: clamp(1.5rem, 3vw, 2.05rem);
+}
+
+/* Both tier rules come AFTER .featured .h2 — each section carries .featured
+   for layout, so equal-specificity rules are resolved by source order. */
+.flagshipTier .h2 {
+  font-size: clamp(1.7rem, 3.6vw, 2.5rem);
+}
+
+/* Selected tier sits a step below the featured project. */
+.selectedTier .h2 {
+  font-size: clamp(1.35rem, 2.6vw, 1.75rem);
+}
+
+.h2 {
+  margin: 0;
+  font-size: clamp(1.3rem, 2.7vw, 1.7rem);
+  font-weight: 650;
+  letter-spacing: -0.022em;
+  line-height: 1.12;
+  color: var(--ink-900);
+}
+
+.h3 {
+  margin: 0;
+  font-size: clamp(1.02rem, 2vw, 1.16rem);
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  color: var(--ink-900);
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 0.79rem;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--ink-400);
+}
+
+/* Credential line — the competition or programme, shown above the title.
+   Larger and warmer than the old tier label so the achievement reads first;
+   the accent tone is used at a size that clears the large-text contrast
+   floor (--peach-deeper is 3.44:1 on the cream page). */
+.credential {
+  display: inline-flex;
+  /* Baseline-ish, not centred: when the text wraps to two lines (Care4You on
+     mobile) a centred rule floats between them instead of marking the start. */
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin: 0 0 0.6rem;
+  font-size: clamp(0.95rem, 1.6vw, 1.08rem);
+  font-weight: 650;
+  letter-spacing: -0.005em;
+  line-height: 1.3;
+  /* Accent tone that still clears 4.5:1 — at ~17px this is SMALL text, so
+     --peach-deeper (3.41:1) would not be readable enough here. */
+  color: var(--terracotta-text);
+}
+
+/* Small warm rule before the text — a quiet marker, not a badge or pill. */
+.credential::before {
+  content: "";
+  flex: none;
+  width: 22px;
+  height: 2px;
+  /* Drops the rule onto the first line's optical centre. */
+  margin-top: 0.62em;
+  border-radius: 2px;
+  background: var(--peach-deep);
+}
+
+.subtitle {
+  margin: 0.35rem 0 0;
+  font-size: clamp(1rem, 2vw, 1.16rem);
+  font-weight: 500;
+  color: var(--ink-700);
+}
+
+.compactSub {
+  margin: 0.2rem 0 0;
+  font-size: 0.92rem;
+  color: var(--ink-700);
+}
+
+.meta {
+  margin: 0.5rem 0 0;
+  font-size: 0.88rem;
+  color: var(--ink-400);
+}
+
+.dot { color: var(--beige-300); }
+.team { color: var(--ink-500); }
+.role { color: var(--peach-deeper); font-weight: 600; }
+
+.lead {
+  margin: 1rem 0 0;
+  max-width: var(--measure);
+  font-size: clamp(1rem, 1.9vw, 1.1rem);
+  line-height: 1.68;
+  color: var(--ink-700);
+}
+
+.summary {
+  margin: 0.9rem 0 0;
+  max-width: var(--measure);
+  font-size: clamp(0.96rem, 1.8vw, 1.05rem);
+  line-height: 1.65;
+  color: var(--ink-700);
+}
+
+.sectionIntro {
+  margin: 0.6rem 0 0;
+  max-width: var(--measure);
+  font-size: clamp(0.94rem, 1.7vw, 1.01rem);
+  line-height: 1.62;
+  color: var(--ink-500);
+}
+
+.bodySm {
+  margin: 0.5rem 0 0;
+  max-width: var(--measure);
+  font-size: clamp(0.88rem, 1.55vw, 0.94rem);
+  line-height: 1.6;
+  color: var(--ink-500);
+}
+
+.section, .hero, .featured { min-width: 0; }
+
+/* --------------------------------------------------------------- themes */
+
+.themes {
+  list-style: none;
+  margin: 1.25rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.1rem;
+}
+
+.theme {
+  font-size: 0.86rem;
+  font-weight: 500;
+  color: var(--ink-500);
+}
+
+.theme::before {
+  content: "";
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  margin-right: 0.5rem;
+  border-radius: 50%;
+  background: var(--blush);
+  vertical-align: middle;
+}
+
+/* ----------------------------------------------------------------- tags */
+
+.tags {
+  list-style: none;
+  margin: 1.3rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.tag {
+  padding: 0.3rem 0.68rem;
+  border-radius: 999px;
+  border: 1px solid var(--beige-200);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--ink-700);
+}
+
+/* ---------------------------------------------------------------- cover */
+
+.coverButton {
+  display: block;
+  width: 100%;
+  margin-top: 1.6rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+  border-radius: 12px;
+  line-height: 0;
+}
+
+.coverButton:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+/* Product branding stays as-is — no recolouring, no fake browser chrome. */
+.cover {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  border: 1px solid var(--beige-100);
+}
+
+/* Cover figure: caption sits under the image, note under the caption. No
+   cream mat, no browser chrome, no heavy shadow — just the screenshot. */
+.coverFigure {
+  margin: 0;
+  min-width: 0;
+}
+
+/* In the split layout the cover fills its column and keeps its own ratio;
+   no frame, no extra container, nothing cropped. */
+.flagshipTier .coverFigure { align-self: start; }
+.flagshipTier .coverButton { margin-top: 0; }
+
+.coverCaption {
+  display: block;
+  margin: 0.75rem 0 0;
+  max-width: var(--measure);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--ink-500);
+}
+
+/* Quiet qualifier — must stay legible, so it keeps a readable ink tone. */
+.coverNote {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--ink-400);
+}
+
+/* -------------------------------------------------------------- metrics */
+
+.metrics {
+  list-style: none;
+  margin: 1.6rem 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr));
+  gap: clamp(0.75rem, 2vw, 1.25rem);
+}
+
+/* 2x2 in the flagship's left column — the auto-fit default would collapse to
+   a single column at this width and make the block very tall. */
+.metricsCompact {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.7rem, 1.6vw, 1rem) clamp(0.9rem, 2vw, 1.4rem);
+  margin-top: 1.3rem;
+}
+
+.metricsCompact .metricValue { font-size: clamp(1.15rem, 2.2vw, 1.45rem); }
+.metricsCompact .metricLabel { font-size: 0.85rem; }
+.metricsCompact .metricNote { font-size: 0.76rem; }
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding-left: 0.9rem;
+  border-left: 2px solid var(--blush);
+}
+
+.metricValue {
+  font-size: clamp(1.35rem, 2.8vw, 1.75rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: var(--peach-deeper);
+}
+
+.metricLabel {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ink-900);
+}
+
+/* The qualification stays attached to its metric. */
+.metricNote {
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--ink-400);
+}
+
+/* ----------------------------------------------------------- highlights */
+
+.highlights {
+  list-style: none;
+  margin: 1.3rem 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+  gap: 0.35rem 1.5rem;
+  max-width: 62rem;
+}
+
+.highlight {
+  position: relative;
+  padding-left: 1rem;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--ink-500);
+}
+
+.highlight::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--blush);
+}
+
+/* ------------------------------------------------ featured (Care4You) */
+
+/* Text left, two real mobile screens right. Uses the shared outer container;
+   the paragraph measure constrains the copy, never the media column. */
+.featured {
+  display: grid;
+  /* ~45 / ~55. The media column carries a min so it never collapses into a
+     narrow strip, and the left column never dictates the section width. */
+  grid-template-columns: minmax(0, 0.9fr) minmax(520px, 1.1fr);
+  gap: clamp(3rem, 4.5vw, 4.5rem);
+  align-items: start;
+}
+
+.featuredText { min-width: 0; }
+
+/* No device chrome, no cream cards — just the screenshots. A two-column grid
+   with a deliberate gap, so the pair reads as ONE composition instead of two
+   images pushed to opposite edges. */
+/* Flex, not grid: each item is sized by its OWN screenshot width, so the
+   measured gap is the real gap. A grid would size both tracks to the widest
+   content (the captions) and centre the narrow portraits inside them,
+   silently reintroducing the large space this rule exists to remove. */
+.phones {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  /* Centred in the media column so the pair is not pinned to one edge. */
+  justify-content: center;
+  gap: clamp(1.75rem, 2.2vw, 2.25rem);
+  align-items: start;
+  min-width: 0;
+}
+
+/* Width comes from the screenshot: displayed height x source aspect ratio.
+   Captions then wrap inside that width instead of dictating it. */
+.phone {
+  flex: 0 1 auto;
+  min-width: 0;
+  width: calc(min(600px, 66vh) * var(--shot-ratio));
+  /* Fallback only. ScreenPair sets --shot-ratio inline from each image's own
+     intrinsic width/height, so screenshots of different proportions (Care4You
+     is 1206x2622, BookLiaoBot ~744x1398) each size correctly. */
+  --shot-ratio: 0.46;
+}
+
+.phoneLead { width: calc(min(650px, 72vh) * var(--shot-ratio)); }
+
+/* Same layout, one step down in weight. BookLiaoBot's screenshots are a wider
+   aspect than Care4You's, so at identical heights they would cover MORE area
+   and outweigh the featured project. A small scale keeps the shared structure
+   while preserving the flagship > featured > selected order. */
+/* Flagship: same structure, wider media column and a larger screenshot so it
+   outranks the featured and selected previews. 42 / 58. */
+/* Nuwa's cover is a wide LANDSCAPE screenshot, so its column width alone sets
+   its size — unlike the tall phone screens elsewhere, which gain area from
+   their height. A narrower gap and a slightly wider media track give the
+   flagship the largest media on the page. */
+.flagshipTier {
+  grid-template-columns: minmax(0, 0.78fr) minmax(520px, 1.22fr);
+  column-gap: clamp(1.75rem, 3vw, 3rem);
+}
+
+.selectedTier .phone { width: calc(min(600px, 66vh) * 0.88 * var(--shot-ratio)); }
+.selectedTier .phoneLead { width: calc(min(650px, 72vh) * 0.88 * var(--shot-ratio)); }
+.selectedTier .phoneImg { height: calc(min(600px, 66vh) * 0.88); }
+.selectedTier .phoneLead .phoneImg { height: calc(min(650px, 72vh) * 0.88); }
+
+/* The event calendar is the principal visual — taller, not wider-boxed. */
+.phoneLead .phoneImg { height: min(650px, 72vh); }
+
+/* Shrink-to-fit: the button box must match the image, otherwise it stretches
+   across its track and centres the image, pushing the pair apart. */
+.phoneButton {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+  border-radius: 12px;
+  line-height: 0;
+}
+
+.phoneButton:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.phoneImg {
+  display: block;
+  /* Height-led: the width is derived from the source ratio, so the element
+     box matches the image and nothing is letterboxed or stretched. */
+  /* Supporting screen sits slightly shorter than the featured one. */
+  height: min(600px, 66vh);
+  width: 100%;
+  border-radius: 12px;
+}
+
+/* Caption never runs wider than the screenshot above it. */
+.phoneCaption {
+  margin: 0.75rem 0 0;
+  max-width: 100%;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--ink-500);
+}
+
+/* ----------------------------------------------- preview feature lists */
+
+/* Compact two-column highlight list for the Care4You preview. Deliberately
+   secondary to the metrics and the screenshots: no cards, no borders, just
+   the existing subtle peach bullet. */
+.previewFeatures {
+  list-style: none;
+  margin: 1.4rem 0 0;
+  padding: 0;
+  display: grid;
+}
+
+.previewFeature {
+  position: relative;
+  min-width: 0;
+  padding-left: 1rem;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--ink-500);
+}
+
+/* The highlight phrases are long enough that a two-column grid wraps every
+   one of them (and strands a lone item on an odd count). A single column
+   keeps each on one line and reads as one clean list. */
+.previewFeatures {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.35rem;
+}
+
+.previewFeature::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--blush);
+}
+
+/* Restrained supporting line under the highlights. */
+.previewNote {
+  margin: 0.9rem 0 0;
+  max-width: var(--measure);
+  font-size: 0.86rem;
+  line-height: 1.55;
+  color: var(--ink-400);
+}
+
+.description {
+  margin: 0.7rem 0 0;
+  max-width: var(--measure);
+  font-size: clamp(0.93rem, 1.7vw, 1rem);
+  line-height: 1.65;
+  color: var(--ink-500);
+}
+
+/* --------------------------------------------------------- compact tier */
+
+.compactGrid {
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.5rem, 3.5vw, 3rem);
+  align-items: start;
+}
+
+.compactItem { min-width: 0; }
+
+.compactList {
+  margin: 0.7rem 0 0;
+  padding-left: 1.05rem;
+  font-size: 0.86rem;
+  line-height: 1.6;
+  color: var(--ink-500);
+}
+
+.compactList li { margin-bottom: 0.1rem; }
+
+.compactItem .tags { margin-top: 1rem; }
+.compactItem .tag { font-size: 0.79rem; padding: 0.25rem 0.6rem; }
+
+/* ------------------------------------------------------------------ cta */
+
+.cta { min-width: 0; }
+
+.ctaButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 44px;
+  margin-top: 1.2rem;
+  padding: 0.72rem 1.35rem;
+  border-radius: 999px;
+  background: var(--peach-deep);
+  color: #fffdfa;
+  font-size: 0.96rem;
+  font-weight: 600;
+  transition: transform var(--dur) var(--ease), background-color var(--dur) var(--ease);
+}
+
+.ctaButton:hover,
+.ctaButton:focus-visible {
+  transform: translateY(-2px);
+  background: var(--peach-deeper);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .back:hover, .ctaButton:hover, .ctaButton:focus-visible { transform: none; }
+}
+
+/* ------------------------------------------------------------ responsive */
+
+@media (max-width: 900px) {
+  /* Stack: text above, media below — the media group takes the full section
+     width and stays centred, keeping the two screens visually paired. */
+  .featured { grid-template-columns: minmax(0, 1fr); }
+  /* Flagship stacks the same way; the screenshot takes the full width. */
+  .flagshipTier { grid-template-columns: minmax(0, 1fr); }
+
+  /* Centred as one pair under the text. */
+  .phones { justify-content: center; gap: clamp(1.5rem, 3vw, 2.25rem); }
+
+  .phone { width: calc(min(520px, 50vh) * var(--shot-ratio)); }
+  .phoneLead { width: calc(min(570px, 55vh) * var(--shot-ratio)); }
+  .phoneImg { height: min(520px, 50vh); }
+  .phoneLead .phoneImg { height: min(570px, 55vh); }
+
+  .selectedTier .phone { width: calc(min(520px, 50vh) * 0.88 * var(--shot-ratio)); }
+  .selectedTier .phoneLead { width: calc(min(570px, 55vh) * 0.88 * var(--shot-ratio)); }
+  .selectedTier .phoneImg { height: calc(min(520px, 50vh) * 0.88); }
+  .selectedTier .phoneLead .phoneImg { height: calc(min(570px, 55vh) * 0.88); }
+
+}
+
+@media (max-width: 760px) {
+  .compactGrid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 620px) {
+  /* One full screen plus a peek at the next. */
+  .phones {
+    display: flex;
+    justify-content: flex-start;
+    gap: 0.875rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    touch-action: pan-x pan-y;
+    scroll-snap-type: x proximity;
+    padding-bottom: 0.5rem;
+  }
+
+  .phone,
+  .phoneLead {
+    flex: none;
+    width: 72%;
+    scroll-snap-align: start;
+  }
+
+  .phoneImg,
+  .phoneLead .phoneImg { width: 100%; }
+
+  .phoneImg,
+  .phoneLead .phoneImg,
+  .selectedTier .phoneImg,
+  .selectedTier .phoneLead .phoneImg { height: auto; width: 100%; max-height: 78vh; }
+
+  .selectedTier .phone,
+  .selectedTier .phoneLead { width: 72%; }
+
+}
